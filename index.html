@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X RPL 1 </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="cursorGlow" aria-hidden="true"></div>
+
+<div class="gate gate-login" id="gateLogin">
+  <div class="gate-panel reveal in-view">
+    <div class="gate-tag">[ akses sistem ]</div>
+    <h1 class="gate-title">X RPL 1</h1>
+    <p class="gate-sub">All info about class x rpl 1.</p>
+
+    <label for="loginNama">Nama</label>
+    <select id="loginNama">
+      <option value="">— pilih nama kamu —</option>
+    </select>
+
+    <div id="guestWrap" style="display:none;">
+      <label for="loginGuestNama">Nama (guru / tamu)</label>
+      <input type="text" id="loginGuestNama" placeholder="Tulis nama kamu">
+    </div>
+
+    <button class="btn primary gate-btn" id="btnMasuk" type="button">▸ Masuk</button>
+    <button class="gate-guest" id="btnJadiGuest" type="button">Bukan siswa X RPL 1? Masuk sebagai guru/tamu</button>
+  </div>
+</div>
+
+<div class="gate gate-loading hide" id="gateLoading">
+  <div class="gate-panel">
+    <div class="gate-tag">[ menghubungkan ]</div>
+    <div class="loader-ring"></div>
+    <div class="loader-status" id="loaderStatus">Memverifikasi akses</div>
+    <div class="loader-bar"><div class="loader-bar-fill" id="loaderBarFill"></div></div>
+  </div>
+</div>
+
+<div class="gate gate-welcome hide" id="gateWelcome">
+  <div class="gate-panel">
+    <div class="welcome-icon">👋</div>
+    <div class="gate-tag">[ akses diterima ]</div>
+    <div class="welcome-name" id="welcomeName">Halo!</div>
+    <p class="gate-sub">Selamat datang di Web Class X RPL 1. Menyiapkan dashboard...</p>
+  </div>
+</div>
+
+<div id="appRoot">
+
+<div class="page">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div class="hero-tag">WEB CLASS X RPL 1</div>
+      <div class="hero-top-actions">
+        <button class="mode-toggle" id="editStatusBtn" type="button">
+          <span class="dot">🔒</span> <span id="editStatusLabel">Mode edit</span>
+        </button>
+        <button class="mode-toggle" id="toggleDark" type="button">
+          <span class="dot">◐</span> <span id="modeLabel">Neon Terang</span>
+        </button>
+      </div>
+    </div>
+    <h1 class="hero-title" contenteditable="true" id="namaKelas" spellcheck="false">X RPL 1</h1>
+    <p class="hero-sub" contenteditable="true" id="taglineKelas" spellcheck="false">Keep coding, keep trying. Karena bahkan program terbaik pun pernah gagal dijalankan.</p>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-target="beranda">beranda</button>
+      <button class="tab" data-target="absensi">absensi</button>
+      <button class="tab" data-target="tugas">tugas</button>
+      <button class="tab" data-target="pengumuman">pengumuman</button>
+      <button class="tab" data-target="struktur">struktur</button>
+      <button class="tab" data-target="jadwal">jadwal</button>
+      <button class="tab" data-target="piket">piket</button>
+    </nav>
+  </header>
+
+  <!-- ================= BERANDA ================= -->
+  <section class="panel active" id="beranda">
+    <div class="stat-row">
+      <div class="stat-card reveal">
+        <span class="stat-num" id="statSiswa">0</span>
+        <span class="stat-label">siswa terdaftar</span>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-num" id="statHadir">0</span>
+        <span class="stat-label">hadir hari ini</span>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-num" id="statTugas">0</span>
+        <span class="stat-label">tugas aktif</span>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-num" id="statPengumuman">0</span>
+        <span class="stat-label">pengumuman</span>
+      </div>
+    </div>
+
+    <div class="grid-two">
+      <div class="card reveal">
+        <h3>Pengumuman terbaru</h3>
+        <div id="beranda-pengumuman" class="mini-list"></div>
+      </div>
+      <div class="card reveal">
+        <h3>Tugas mendekati deadline</h3>
+        <div id="beranda-tugas" class="mini-list"></div>
+      </div>
+    </div>
+
+    <div class="card backup-card reveal">
+      <h3>Cadangkan &amp; pulihkan data</h3>
+      <p class="backup-desc">Data (siswa, absensi, tugas, pengumuman) tersimpan di browser ini saja. Kalau file web dipindah/dibuka di perangkat lain, unduh cadangan dulu supaya datanya tidak hilang.</p>
+      <div class="backup-actions">
+        <button class="btn primary" id="btnBackup">⭳ Unduh cadangan</button>
+        <button class="btn ghost" id="btnRestoreTrigger">⭱ Pulihkan dari file</button>
+        <input type="file" id="inpRestore" accept="application/json" style="display:none">
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABSENSI ================= -->
+  <section class="panel" id="absensi">
+    <div class="panel-head">
+      <h2>Absensi</h2>
+      <div class="head-controls">
+        <input type="date" id="tglAbsen">
+      </div>
+    </div>
+    <div class="lock-hint" id="lockHintAbsensi" style="display:none;">
+      🔒 Cuma <strong>Nadya Abilla Shiva</strong> &amp; <strong>Raphael Josephine</strong> yang bisa ubah absensi.
+      <button id="btnUnlockAbsensi" type="button">Buka mode edit</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabelAbsensi">
+        <thead>
+          <tr><th>No</th><th>Nama</th><th>Status</th><th>Rekap (H/I/S/A)</th></tr>
+        </thead>
+        <tbody id="bodyAbsensi"></tbody>
+      </table>
+    </div>
+    <p class="empty-hint" id="hintAbsensiKosong">Belum ada siswa. Klik "Tambah siswa" untuk mulai.</p>
+  </section>
+
+  <!-- ================= TUGAS ================= -->
+  <section class="panel" id="tugas">
+    <div class="panel-head">
+      <h2>Tugas</h2>
+      <button class="btn primary" id="btnTambahTugas">+ Tugas baru</button>
+    </div>
+    <div class="lock-hint" id="lockHintTugas" style="display:none;">
+      🔒 Cuma <strong>Nadya Abilla Shiva</strong> &amp; <strong>Raphael Josephine</strong> yang bisa ubah tugas.
+      <button id="btnUnlockTugas" type="button">Buka mode edit</button>
+    </div>
+
+    <div class="tugas-toolbar">
+      <input type="text" id="cariTugas" placeholder="cari judul / mapel...">
+      <div class="filter-group" id="filterTugas">
+        <button class="filter-btn active" data-filter="semua">Semua</button>
+        <button class="filter-btn" data-filter="aktif">Aktif</button>
+        <button class="filter-btn" data-filter="selesai">Selesai</button>
+        <button class="filter-btn" data-filter="lewat">Lewat deadline</button>
+      </div>
+    </div>
+
+    <div class="card-list" id="listTugas"></div>
+    <p class="empty-hint" id="hintTugasKosong">Belum ada tugas. Tambahkan tugas pertama kelas.</p>
+    <p class="empty-hint" id="hintTugasFilterKosong">Tidak ada tugas yang cocok dengan pencarian/filter ini.</p>
+  </section>
+
+  <!-- ================= PENGUMUMAN ================= -->
+  <section class="panel" id="pengumuman">
+    <div class="panel-head">
+      <h2>Pengumuman</h2>
+      <button class="btn primary" id="btnTambahPengumuman">+ Pengumuman baru</button>
+    </div>
+    <div class="lock-hint" id="lockHintPengumuman" style="display:none;">
+      🔒 Cuma <strong>Nadya Abilla Shiva</strong> &amp; <strong>Raphael Josephine</strong> yang bisa ubah pengumuman.
+      <button id="btnUnlockPengumuman" type="button">Buka mode edit</button>
+    </div>
+    <div class="sticky-board" id="listPengumuman"></div>
+    <p class="empty-hint" id="hintPengumumanKosong">Belum ada pengumuman.</p>
+  </section>
+
+  <!-- ================= STRUKTUR KELAS ================= -->
+  <section class="panel" id="struktur">
+    <div class="section-tag">// 06. struktur_kelas</div>
+    <div class="panel-head">
+      <h2>Struktur Kelas</h2>
+    </div>
+    <div class="struktur-grid" id="strukturGrid"></div>
+  </section>
+
+  <!-- ================= JADWAL ================= -->
+  <section class="panel" id="jadwal">
+    <div class="panel-head">
+      <h2>Jadwal Pelajaran</h2>
+    </div>
+    <div class="jadwal-grid" id="jadwalGrid"></div>
+    <p class="empty-hint" style="display:block; margin-top:14px;">Jadwal masih tetap (belum bisa diedit dari halaman ini) — kalau ada perubahan jadwal, bilang saja ke saya.</p>
+  </section>
+
+  <!-- ================= PIKET ================= -->
+  <section class="panel" id="piket">
+    <div class="panel-head">
+      <h2>Daftar Piket</h2>
+    </div>
+    <div class="jadwal-grid" id="piketGrid"></div>
+    <p class="empty-hint" style="display:block; margin-top:14px;">Bersih hari ini, nyaman untuk kita semua.</p>
+  </section>
+
+  <footer class="foot">dibuat untuk kebutuhan kelas ·</footer>
+</div>
+
+</div><!-- /#appRoot -->
+
+<!-- ================= MODAL (dipakai ulang) ================= -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
