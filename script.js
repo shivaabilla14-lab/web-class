@@ -9,6 +9,9 @@ function isEditorRole(){
   return EDITOR_NAMES.includes((currentUser || "").toUpperCase());
 }
 
+/* Panggil ini di awal setiap aksi yang mengubah data.
+   Return true kalau boleh lanjut, false kalau harus berhenti
+   (modal peringatan/kata sandi akan muncul otomatis). */
 function requireEditAccess(){
   if(editUnlocked) return true;
 
@@ -71,17 +74,42 @@ function updateEditUI(){
 
 /* Data siswa awal — No & Nama (dari data absen kelas) */
 const SISWA_AWAL = [
-  "AATHIF","ADI SUYITNO","AGUNG AKBAR PAMUNGKAS","AL VINSA PRIMADANI",
-  "ALFATHIR LUXSON ILHAM MUHTIYAR","ALIEF ISKANDAR ARMAIN","ANGELICA WILDATUL ROHMA",
-  "AUREL DWI PUTRA CHERINA JUNIAN","BAGAS LEO SAPUTRA","DIMAS NATHAN RAHARDIAN",
-  "EFAN MAULANA","FAITH KAYSAN SUTRISNO","GALENO GIBRAN KURNIAWAN",
-  "JAVIER TRIABDA WICAKSONO","LUQMAN HAKIM NURDIANSYAH","MOCHAMMAD BAFIZA DAISYAHREZA",
-  "MOCHAMMAD RIZKI ABDURAHMAN","MOHAMMAD HASAN FERDIYANSAH","MUHAMMAD ALDI RAHMAN BAIHAKI",
-  "MUHAMMAD BINTANG SAMPURNO AJI","MUHAMMAD DAVA AKBAR HIDAYATULLAH","MUHAMMAD FAHROSI",
-  "MUUHAMMAD FIRMAN DANI","MUHAMMAD HAIKAL JAWAHIR","MUHAMMAD IZAMUL KAROMAH",
-  "MUHAMMAD REZA FAHLEVI","NADYA ABILLA SHIVA","NAKSAH FAHROBI","PRAMADITA ADITYA",
-  "RAFAEL VALENCIA AKBAR","RAIHAN ADITYA SAPUTRA","RAPHAEL JOSEPHINE",
-  "RISQI ADITYA SAPUTRA","SHINDU PUTRA DHARMAWANGSA","ZAINUR ROFIQI","ZAKIYATUS SAADAH"
+  {nama:"AATHIF", ig:""},
+  {nama:"ADI SUYITNO", ig:""},
+  {nama:"AGUNG AKBAR PAMUNGKAS", ig:"agngakbrrr"},
+  {nama:"AL VINSA PRIMADANI", ig:"vinza_jpg"},
+  {nama:"ALFATHIR LUXSON ILHAM MUHTIYAR", ig:"tir_aja20"},
+  {nama:"ALIEF ISKANDAR ARMAIN", ig:""},
+  {nama:"ANGELICA WILDATUL ROHMA", ig:"babycrab0w"},
+  {nama:"AUREL DWI PUTRA CHERINA JUNIAN", ig:"aurel.ptz"},
+  {nama:"BAGAS LEO SAPUTRA", ig:""},
+  {nama:"DIMAS NATHAN RAHARDIAN", ig:""},
+  {nama:"EFAN MAULANA", ig:""},
+  {nama:"FAITH KAYSAN SUTRISNO", ig:""},
+  {nama:"GALENO GIBRAN KURNIAWAN", ig:"ibraaa_bergiji"},
+  {nama:"JAVIER TRIABDA WICAKSONO", ig:"xzeerozz"},
+  {nama:"LUQMAN HAKIM NURDIANSYAH", ig:""},
+  {nama:"MOCHAMMAD BAFIZA DAISYAHREZA", ig:"bafizainho"},
+  {nama:"MOCHAMMAD RIZKI ABDURAHMAN", ig:""},
+  {nama:"MOHAMMAD HASAN FERDIYANSAH", ig:"ferdi_aja26"},
+  {nama:"MUHAMMAD ALDI RAHMAN BAIHAKI", ig:"urfav.all_9"},
+  {nama:"MUHAMMAD BINTANG SAMPURNO AJI", ig:"binnnnnnnn27"},
+  {nama:"MUHAMMAD DAVA AKBAR HIDAYATULLAH", ig:""},
+  {nama:"MUHAMMAD FAHROSI", ig:""},
+  {nama:"MUUHAMMAD FIRMAN DANI", ig:"mazz_dann07"},
+  {nama:"MUHAMMAD HAIKAL JAWAHIR", ig:""},
+  {nama:"MUHAMMAD IZAMUL KAROMAH", ig:"izamulkaromah865"},
+  {nama:"MUHAMMAD REZA FAHLEVI", ig:""},
+  {nama:"NADYA ABILLA SHIVA", ig:"coffeenalatee"},
+  {nama:"NAKSAH FAHROBI", ig:"naksafarobyy"},
+  {nama:"PRAMADITA ADITYA", ig:"_skytherrack"},
+  {nama:"RAFAEL VALENCIA AKBAR", ig:"barzshehe"},
+  {nama:"RAIHAN ADITYA SAPUTRA", ig:""},
+  {nama:"RAPHAEL JOSEPHINE", ig:"josyaday_"},
+  {nama:"RISQI ADITYA SAPUTRA", ig:"dtzzyaaa"},
+  {nama:"SHINDU PUTRA DHARMAWANGSA", ig:"sindputra4"},
+  {nama:"ZAINUR ROFIQI", ig:"maspiqq_"},
+  {nama:"ZAKIYATUS SAADAH", ig:"_cxykiyy_"}
 ];
 
 function loadDB(){
@@ -90,7 +118,7 @@ function loadDB(){
     if(raw) return JSON.parse(raw);
   }catch(e){ console.warn("Gagal memuat data, mulai dari kosong.", e); }
   return {
-    siswa: SISWA_AWAL.map((nama, i) => ({ id: "s" + (i+1), nama })),
+    siswa: SISWA_AWAL.map((s, i) => ({ id: "s" + (i+1), nama: s.nama, ig: s.ig || "" })),
     absensi: {},
     tugas: [],
     pengumuman: [],
@@ -104,6 +132,21 @@ function saveDB(){
 }
 
 let db = loadDB();
+
+/* migrasi: kalau data siswa lama belum punya field Instagram,
+   tempelkan dari SISWA_AWAL berdasarkan nama yang cocok. */
+(function migrasiInstagram(){
+  const igByName = {};
+  SISWA_AWAL.forEach(s => igByName[s.nama.toUpperCase()] = s.ig || "");
+  let berubah = false;
+  (db.siswa || []).forEach(s=>{
+    if(s.ig === undefined){
+      s.ig = igByName[(s.nama || "").toUpperCase()] || "";
+      berubah = true;
+    }
+  });
+  if(berubah) saveDB();
+})();
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const todayStr = () => new Date().toISOString().slice(0,10);
 const fmtDate = (s) => {
@@ -259,6 +302,7 @@ function renderAbsensi(){
     tr.innerHTML = `
       <td>${idx+1}</td>
       <td>${escapeHtml(s.nama)}</td>
+      <td>${s.ig ? `<a class="ig-link" href="https://instagram.com/${encodeURIComponent(s.ig)}" target="_blank" rel="noopener">@${escapeHtml(s.ig)}</a>` : `<span class="ig-empty">—</span>`}</td>
       <td>
         <div class="status-group">
           ${['H','I','S','A'].map(k=>`<button class="status-btn ${statusHariIni===k?'on':''}" data-code="${k}" data-id="${s.id}">${k}</button>`).join('')}
@@ -344,7 +388,6 @@ const STRUKTUR = [
   { peran:"Bendahara 1", nama:"Javier Triabfa Wicaksono",   foto:"foto/bendahara1.jpg" },
   { peran:"Bendahara 2", nama:"Zakiyatus Saadah",           foto:"foto/bendahara2.jpg" },
 ];
-
 function initials(nama){
   return nama.split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 }
