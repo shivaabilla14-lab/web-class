@@ -1,6 +1,6 @@
 const DB_KEY = "web-kelas-data";
 
-const EDITOR_NAMES = ["NADYA ABILLA SHIVA", "RAPHAEL JOSEPHINE"];
+const EDITOR_NAMES = ["NADYA ABILLA SHIVA", "RAPHAEL JOSEPHINE", "ANGELICA WILDATUL ROHMA"];
 const EDITOR_PASSWORD = "123456";
 let currentUser = "";
 let editUnlocked = false;
@@ -18,7 +18,7 @@ function requireEditAccess(){
   if(!isEditorRole()){
     openModal(`
       <h3>🔒 Akses terbatas</h3>
-      <p class="modal-desc">Hanya <strong>Nadya Abilla Shiva</strong> dan <strong>Raphael Josephine</strong> yang bisa mengedit absensi, tugas, dan pengumuman.</p>
+      <p class="modal-desc">Hanya <strong>Nadya Abilla Shiva</strong> <strong>Raphael Josephine</strong> <strong>ANGELICA WILDATUL ROHMA</strong> yang bisa mengedit absensi, tugas, dan pengumuman.</p>
       <div class="modal-actions"><button class="btn primary" id="btnTutupAkses">Mengerti</button></div>
     `, (box)=>{
       box.querySelector('#btnTutupAkses').onclick = closeModal;
@@ -107,7 +107,7 @@ const SISWA_AWAL = [
   {nama:"RAIHAN ADITYA SAPUTRA", ig:""},
   {nama:"RAPHAEL JOSEPHINE", ig:"josyaday_"},
   {nama:"RISQI ADITYA SAPUTRA", ig:"dtzzyaaa"},
-  {nama:"SHINDU PUTRA DHARMAWANGSA", ig:"sindputra4"},
+  {nama:"SINDHU PUTRA DHARMAWANGSA", ig:"sindputra4"},
   {nama:"ZAINUR ROFIQI", ig:"maspiqq_"},
   {nama:"ZAKIYATUS SAADAH", ig:"_cxykiyy_"}
 ];
@@ -381,7 +381,7 @@ function renderJadwal(){
    (misalnya foto/ketua.jpg) lalu isi field "foto" dengan path-nya.
    Kalau foto belum ada / gagal dimuat, otomatis tampil avatar inisial. */
 const STRUKTUR = [
-  { peran:"Ketua Kelas", nama:"Shindu Putra Dharmawangsa", foto:"foto/ketua.jpg" },
+  { peran:"Ketua Kelas", nama:"Sindhu Putra Dharmawangsa", foto:"foto/ketua.jpg" },
   { peran:"Wakil Kelas", nama:"Angelica Wildatul Rohma",    foto:"foto/wakil.jpg" },
   { peran:"Sekretaris 1", nama:"Nadya Abilla Shiva",        foto:"foto/sekre1.jpg" },
   { peran:"Sekretaris 2", nama:"Raphael Josephine",         foto:"foto/sekre2.jpg" },
@@ -413,7 +413,7 @@ const PIKET = [
   { hari:"Selasa", anggota:["Rehan","Kaka","Aldi","Jo","Agung","Izam","Reza"] },
   { hari:"Rabu", anggota:["Zaskia","Bafiza","Dafa","Evan","Lukman","Aditya","Atif"] },
   { hari:"Kamis", anggota:["Putra","Ferdi","Fatir","Ibra","Fafa","Roby","Alif"] },
-  { hari:"Jumat", anggota:["Bagas","Dani","Nala","Jevi","Shindu","Haikal","Dimas"] },
+  { hari:"Jumat", anggota:["Bagas","Dani","Nala","Jevi","Sindhu","Haikal","Dimas"] },
 ];
 
 function renderPiket(){
